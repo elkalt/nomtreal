@@ -5,11 +5,17 @@
 </script>
 
 <div class="content-container">
-  <h1>{data.info.name}</h1>
   <div class="header">
-    <p>{new Date(data.info.date).toISOString().split('T')[0]}</p>
-    <p>{data.info.rating}/5</p>
+    <div class="row">
+      <h1>{data.info.name}</h1>
+      <span class="material-symbols-outlined"><a href={data.info.location}>pin_drop</a></span>
+    </div>
+    <div class="row">
+      <p>{new Date(data.info.date).toISOString().split('T')[0]}</p>
+      <p>{data.info.rating}/5</p>
+    </div>
   </div>
+
   <div>
     {@html data.content}
   </div>
@@ -34,16 +40,31 @@
 
     .header {
       display: flex;
-      flex-direction: row;
+      flex-direction: column;
       align-items: center;
-      justify-content: space-between;
+      justify-content: center;
       width: 100%;
-      padding-bottom: 1rem;
-    }
+      gap: 0.1rem;
+      margin-bottom: 1rem;
 
-    :global(h2) {
-      padding: 0;
-      margin: 0;
+      .row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+  
+        a {
+          text-decoration: none;
+          color: black;
+          margin: 0;
+          padding: 0;
+        }
+
+        p {
+          margin-bottom: 0;
+        }
+      }
     }
 
     :global(p) {

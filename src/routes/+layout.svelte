@@ -9,7 +9,7 @@
     </span>
   </div>
   <div class="header-element">
-    <h1>NoMtreal</h1>
+    <h1><a href="/reviews/">NoMtreal</a></h1>
   </div>
   <div class="header-element">
     <span class="material-symbols-outlined">
@@ -33,20 +33,12 @@
       align-items: center;
       text-align: center;
 
-      .material-symbols-outlined {
-        font-variation-settings:
-          'FILL' 0,
-          'wght' 400,
-          'GRAD' 0,
-          'opsz' 24;
-        cursor: pointer;
+      a {
+        text-decoration: none;
+        color: black;
 
         &:hover {
-          font-variation-settings:
-            'FILL' 0,
-            'wght' 700,
-            'GRAD' 0,
-            'opsz' 24;
+          text-shadow: 0px 1px 0px gray;
         }
       }
     }

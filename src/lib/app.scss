@@ -1,8 +1,31 @@
 :root {
-  --background-color: #fafafa;
+  --background-color: #fff1ec;
 }
 
-h1, h2, p {
+:global(body) {
+  background-color: var(--background-color);
+  height: 100%;
+}
+
+:global(h1), :global(h2), :global(p) {
   padding: 0;
   margin: 0;
+  font-family: 'EB Garamond', serif;  
+}
+
+.material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
+  cursor: pointer;
+
+  &:hover {
+    font-variation-settings:
+      'FILL' 0,
+      'wght' 700,
+      'GRAD' 0,
+      'opsz' 24;
+  }
 }

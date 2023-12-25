@@ -4,22 +4,21 @@
 
 <div class="reviews-container">
   {#each reviews as review}
-    <div class="review">
+    <a href={"/reviews/" + review.name.replace(/\s/g, '-').toLowerCase()}>
       <div class="row">
-        <h2><a href={"/reviews/" + review.name.replace(/\s/g, '-').toLowerCase()}>{review.name}</a></h2>
+        <h2>{review.name}</h2>
         <p>{new Date(review.date).toISOString().split('T')[0]}</p>
       </div>
       <div class="row">
         <p>{review.priceRange[0]} - {review.priceRange[1]}$</p>
         <p>{review.rating}/5</p>
       </div>
-    </div>
+    </a>
   {/each}
 </div>
 
 <style lang="scss">
   @import '$lib/app.scss';
-
   .reviews-container {
     display: flex;
     flex-direction: column;
@@ -34,13 +33,23 @@
       width: 100%;
     }
 
-    .review {
+    a {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
       width: 100%;
       gap: 0.1rem;
+
+      text-decoration: none;
+      color: black;
+
+      text-decoration: none;
+      color: black;
+
+      &:hover {
+        text-shadow: 0px 1px 0px gray;
+      }
 
       .row {
         display: flex;
