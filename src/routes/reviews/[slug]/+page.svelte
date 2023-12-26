@@ -8,7 +8,7 @@
   <div class="header">
     <div class="row">
       <h1>{data.info.name}</h1>
-      <span class="material-symbols-outlined"><a href={data.info.location}>pin_drop</a></span>
+      <span class="material-symbols-outlined"><a target="_blank" rel="noopener noreferrer" href={data.info.location}>pin_drop</a></span>
     </div>
     <div class="row">
       <p>{new Date(data.info.date).toISOString().split('T')[0]}</p>
