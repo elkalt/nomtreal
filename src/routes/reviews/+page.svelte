@@ -1,13 +1,32 @@
 <script lang="ts">
-  import { reviews } from '$lib/review-info';
+  import { TagColors, Reviews, Tags } from '$lib/review-info';
+
+  function getColor(tag: string): string {
+    if (tag in TagColors) {
+      return "var(--t-" + TagColors[tag as keyof typeof TagColors] + ")";
+    } else {
+      return "var(--t-default)";
+    }
+  }
 </script>
 
+<!-- <div class="filters-container">
+
+</div> -->
+
 <div class="reviews-container">
-  {#each reviews as review}
+  {#each Reviews as review}
     <a href={"/reviews/" + review.name.replace(/\s/g, '-').toLowerCase()}>
       <div class="row">
-        <h2>{review.name}</h2>
-        <p>{new Date(review.date).toISOString().split('T')[0]}</p>
+        <div class="title-container">
+          <h2>{review.name}</h2>
+          <p>{new Date(review.date).toISOString().split('T')[0]}</p>
+        </div>
+        <div class="tags-container">
+          {#each review.tags as tag}
+            <div class="tag" style:background-color={getColor(tag)}>{tag}</div>
+          {/each}
+        </div>
       </div>
       <div class="row">
         <p>{review.priceRange[0]} - {review.priceRange[1]}$</p>
@@ -48,7 +67,7 @@
       color: black;
 
       &:hover {
-        text-shadow: 0px 1px 0px gray;
+        text-shadow: 0px 1px 0px black;
       }
 
       .row {
@@ -57,6 +76,33 @@
         justify-content: space-between;
         align-items: center;
         width: 100%;
+
+        .title-container {
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          align-items: baseline;
+          gap: 0.25rem;
+
+          p {
+            font-size: 0.8rem;
+            color: rgb(75, 75, 75);
+          }
+        }
+
+        .tags-container {
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          align-items: center;
+          gap: 0.25rem;
+
+          .tag {
+            padding: 0.25rem;
+            border-radius: 0.5rem;
+            font-size: 0.8rem;
+          }
+        }
       }
     }
   }

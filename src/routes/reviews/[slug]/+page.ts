@@ -1,6 +1,6 @@
 import type { PageLoad } from './$types';
 import { error } from '@sveltejs/kit';
-import { reviews } from '$lib/review-info';
+import { Reviews } from '$lib/review-info';
 import showdown from 'showdown';
 
 export const load: PageLoad = async ({ fetch, params }) => {
@@ -11,7 +11,7 @@ export const load: PageLoad = async ({ fetch, params }) => {
   let converter = new showdown.Converter();
   let html = converter.makeHtml(text);
 
-  let reviewInfo = reviews.find((review) => review.name.replace(/\s/g, '-').toLowerCase() === params.slug);
+  let reviewInfo = Reviews.find((review) => review.name.replace(/\s/g, '-').toLowerCase() === params.slug);
 
   return {
     info: reviewInfo,
