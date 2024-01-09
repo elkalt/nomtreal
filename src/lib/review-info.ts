@@ -23,6 +23,10 @@ export const TagColors: Record<Tags, string> =  {
   [Tags.AMERICAN]: "red",
 }
 
+export function getNameURL(name: string): string {
+  return name.replace(/\s/g, '-').toLowerCase();
+}
+
 export const Reviews: ReviewInfo[] = [
   {
     name: "Le Vieux St-Laurent",

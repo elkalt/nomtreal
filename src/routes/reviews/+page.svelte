@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { TagColors, Reviews, Tags } from '$lib/review-info';
+  import { TagColors, Reviews, Tags, getNameURL } from '$lib/review-info';
 
   function getColor(tag: string): string {
     if (tag in TagColors) {
@@ -16,7 +16,7 @@
 
 <div class="reviews-container">
   {#each Reviews as review}
-    <a href={"/reviews/" + review.name.replace(/\s/g, '-').toLowerCase()}>
+    <a href={"/reviews/" + getNameURL(review.name)}>
       <div class="row">
         <div class="title-container">
           <h2>{review.name}</h2>
