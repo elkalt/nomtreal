@@ -23,6 +23,14 @@ export const TagColors: Record<Tags, string> =  {
   [Tags.AMERICAN]: "red",
 }
 
+export function getTagColor(tag: string): string {
+  if (tag in TagColors) {
+    return "var(--t-" + TagColors[tag as keyof typeof TagColors] + ")";
+  } else {
+    return "var(--t-default)";
+  }
+}
+
 export function getNameURL(name: string): string {
   return name.replace(/\s/g, '-').toLowerCase();
 }

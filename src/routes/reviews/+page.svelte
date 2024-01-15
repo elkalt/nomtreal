@@ -1,109 +1,258 @@
 <script lang="ts">
-  import { TagColors, Reviews, Tags, getNameURL } from '$lib/review-info';
+  import { getTagColor, Reviews, Tags, getNameURL } from '$lib/review-info';
 
-  function getColor(tag: string): string {
-    if (tag in TagColors) {
-      return "var(--t-" + TagColors[tag as keyof typeof TagColors] + ")";
+  let reviews = [...Reviews];
+
+  const meals = [Tags.BREAKFAST, Tags.BRUNCH, Tags.LUNCH, Tags.DINNER];
+  const cuisines = Object.values(Tags).filter(v => !meals.includes(v));
+  let filters: string[] = [];
+  
+  function toggleFilter(filter: string) {
+    if (filters.includes(filter)) {
+      filters = filters.filter(f => f !== filter);
     } else {
-      return "var(--t-default)";
+      filters.push(filter);
     }
+    filters = [...filters];
+    reviews = Reviews.filter(r => filters.every(f => r.tags.includes(f)));
+  }
+
+  enum sortTypes {
+    PRICE = "Avg. Price",
+    RATING = "Rating",
+    DATE = "Date"
+  }
+  let sorts: Record<sortTypes, boolean> = Object.values(sortTypes).reduce((acc, val) =>
+  ({ ...acc, [val]: false }), {} as Record<sortTypes, boolean>);
+  let currentSort: sortTypes = sortTypes.DATE;
+  sorts[currentSort] = true;
+
+  function sortReviews() {
+    reviews = reviews.sort((a, b) => {
+      let comparison = 0;
+      switch (currentSort) {
+        case sortTypes.PRICE:
+          comparison = (a.priceRange[0] + a.priceRange[1])/2 - (b.priceRange[0] + b.priceRange[1])/2;
+          break;
+        case sortTypes.RATING:
+          comparison = a.rating - b.rating;
+          break;
+        case sortTypes.DATE:
+          comparison = new Date(a.date).getTime() - new Date(b.date).getTime();
+          break;
+      }
+      return sorts[currentSort] ? comparison : -comparison;
+    });
+  }
+
+  function toSortType(sort: string): sortTypes | null {
+    return Object.values(sortTypes).includes(sort as sortTypes) ? sort as sortTypes : null;
+  }
+
+  function changeSort(sort: sortTypes) {
+    if (currentSort === sort) {
+      sorts[sort] = !sorts[sort];
+    } else {
+      currentSort = sort;
+      sorts[sort] = true;
+    }
+    sortReviews();
   }
 </script>
 
-<!-- <div class="filters-container">
 
-</div> -->
-
-<div class="reviews-container">
-  {#each Reviews as review}
-    <a href={"/reviews/" + getNameURL(review.name)}>
-      <div class="row">
-        <div class="title-container">
-          <h2>{review.name}</h2>
-          <p>{new Date(review.date).toISOString().split('T')[0]}</p>
+<div class="content-container">
+  <div class="search-container">
+    <div class="sort-container">
+      {#each Object.keys(sorts) as sort}
+        {@const sortType = toSortType(sort)}
+        {#if sortType}
+          <button class="sort"
+            on:click={() => changeSort(sortType)}
+            on:keydown={(event) => ['Enter', ' '].includes(event.key) && changeSort(sortType)}>
+            {sort + (sortType === currentSort ? (sorts[sortType] ? " ↓" : " ↑") : " ↕")}
+          </button>
+        {/if}
+      {/each}
+    </div>
+    <div class="filter-container">
+      Meal:
+      {#each meals as meal}
+        <button class="filter" on:click={() => toggleFilter(meal)}>
+          <div class="indicator" style:background-color={filters.includes(meal) ? getTagColor(meal) : "transparent"}></div>
+          {meal}
+        </button>
+      {/each}
+    </div>
+    <div class="filter-container">
+      Cuisine:
+      {#each cuisines as cuisine}
+        <button class="filter" on:click={() => toggleFilter(cuisine)}>
+          <div class="indicator" style:background-color={filters.includes(cuisine) ? getTagColor(cuisine) : "transparent"}></div>
+          {cuisine}
+        </button>
+      {/each}
+    </div>
+  </div>
+  
+  <div class="reviews-container">
+    {#each reviews as review}
+      <a href={"/reviews/" + getNameURL(review.name)}>
+        <div class="row">
+          <div class="title-container">
+            <h2>{review.name}</h2>
+            <p>{new Date(review.date).toISOString().split('T')[0]}</p>
+          </div>
+          <div class="tags-container">
+            {#each review.tags as tag}
+              <div class="tag" style:background-color={getTagColor(tag)}>{tag}</div>
+            {/each}
+          </div>
         </div>
-        <div class="tags-container">
-          {#each review.tags as tag}
-            <div class="tag" style:background-color={getColor(tag)}>{tag}</div>
-          {/each}
+        <div class="row">
+          <p>{review.priceRange[0]} - {review.priceRange[1]}$</p>
+          <p>{review.rating}/5</p>
         </div>
-      </div>
-      <div class="row">
-        <p>{review.priceRange[0]} - {review.priceRange[1]}$</p>
-        <p>{review.rating}/5</p>
-      </div>
-    </a>
-  {/each}
+      </a>
+    {/each}
+  </div>
 </div>
 
 <style lang="scss">
   @import '$lib/app.scss';
-  .reviews-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 50%;
-    margin: auto;
-    padding: 0.5rem;
+  .content-container {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
     gap: 1rem;
+    padding: 0.5rem;
 
     @media (max-width: 768px) {
-      width: 100%;
-    }
-
-    a {
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-      gap: 0.1rem;
+      padding: 0;
+    }
 
-      text-decoration: none;
-      color: black;
+    .search-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
 
-      text-decoration: none;
-      color: black;
-
-      &:hover {
-        text-shadow: 0px 1px 0px black;
-      }
-
-      .row {
+      .filter-container {
         display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
+        flex-direction: column;
 
-        .title-container {
-          display: flex;
+        @media (max-width: 768px) {
           flex-direction: row;
-          justify-content: center;
-          align-items: baseline;
-          gap: 0.25rem;
-
-          p {
-            font-size: 0.8rem;
-            color: rgb(75, 75, 75);
-          }
         }
 
-        .tags-container {
+        .filter {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          gap: 0.25rem;
+          background-color: transparent;
+          border: none;
+          cursor: pointer;
+          width: min-content;
+
+          .indicator {
+            width: 0.75rem;
+            height: 0.75rem;
+            border-radius: 33%;
+            border: 1px solid black;
+          }
+        }
+      }
+
+      .sort-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: baseline;
+        gap: 0.25rem;
+        align-items: center;
+
+        .sort {
+          background-color: transparent;
           display: flex;
           flex-direction: row;
           justify-content: center;
           align-items: center;
           gap: 0.25rem;
+          padding-left: 0.3rem;
+          padding-right: 0.3rem;
+          border: 1px solid black;
+          border-radius: 0.5rem;
+          cursor: pointer;
+        }
+      }
+    }
 
-          .tag {
-            padding: 0.25rem;
-            border-radius: 0.5rem;
-            font-size: 0.8rem;
+    .reviews-container {
+      display: flex;
+      flex-direction: column;
+      align-items: baseline;
+      width: 100%;
+      margin: auto;
+      gap: 1rem;
+  
+      @media (max-width: 768px) {
+        width: 100%;
+      }
+  
+      a {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        gap: 0.1rem;
+  
+        text-decoration: none;
+        color: black;
+  
+        text-decoration: none;
+        color: black;
+  
+        &:hover {
+          text-shadow: 0px 1px 0px black;
+        }
+  
+        .row {
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+          width: 100%;
+  
+          .title-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: baseline;
+            gap: 0.25rem;
+  
+            p {
+              font-size: 0.8rem;
+              color: rgb(75, 75, 75);
+            }
+          }
+  
+          .tags-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 0.25rem;
+  
+            .tag {
+              padding: 0.25rem;
+              border-radius: 0.5rem;
+              font-size: 0.8rem;
+            }
           }
         }
       }
     }
   }
+
 </style>
