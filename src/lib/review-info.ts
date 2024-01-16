@@ -12,7 +12,8 @@ export enum Tags {
   BRUNCH = "Brunch",
   LUNCH = "Lunch",
   DINNER = "Dinner",
-  AMERICAN = "American",
+  AMERICAN = "North American",
+  LEBANESE = "Lebanese",
 }
 
 export const TagColors: Record<Tags, string> =  {
@@ -21,6 +22,7 @@ export const TagColors: Record<Tags, string> =  {
   [Tags.LUNCH]: "light-blue",
   [Tags.DINNER]: "dark-blue",
   [Tags.AMERICAN]: "red",
+  [Tags.LEBANESE]: "light-green",
 }
 
 export function getTagColor(tag: string): string {
@@ -42,7 +44,7 @@ export const Reviews: ReviewInfo[] = [
     priceRange: [13, 25],
     date: new Date("2023-12-24"),
     location: "https://maps.app.goo.gl/Ffiy43gfTCTJ35pT9",
-    tags: [Tags.BREAKFAST, Tags.BRUNCH]
+    tags: [Tags.BREAKFAST, Tags.BRUNCH, Tags.AMERICAN]
   },
   {
     name: "Lali's",
@@ -52,4 +54,12 @@ export const Reviews: ReviewInfo[] = [
     location: "https://maps.app.goo.gl/So6M3RJWysTgzgGZ9",
     tags: [Tags.LUNCH, Tags.DINNER, Tags.AMERICAN]
   },
+  {
+    name: "ÔFour",
+    rating: 4,
+    priceRange: [10, 15],
+    date: new Date("2023-12-24"),
+    location: "https://maps.app.goo.gl/i7E7kxwLvebPHdUN9",
+    tags: [Tags.LUNCH, Tags.DINNER, Tags.LEBANESE]
+  }
 ];

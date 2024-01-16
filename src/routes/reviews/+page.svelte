@@ -7,7 +7,7 @@
   const cuisines = Object.values(Tags).filter(v => !meals.includes(v));
   let filters: string[] = [];
   
-  function toggleFilter(filter: string) {
+  function toggleFilter(filter: string): void {
     if (filters.includes(filter)) {
       filters = filters.filter(f => f !== filter);
     } else {
@@ -69,14 +69,15 @@
         {#if sortType}
           <button class="sort"
             on:click={() => changeSort(sortType)}
-            on:keydown={(event) => ['Enter', ' '].includes(event.key) && changeSort(sortType)}>
-            {sort + (sortType === currentSort ? (sorts[sortType] ? " ↓" : " ↑") : " ↕")}
+            on:keydown={(event) => ['Enter', ' '].includes(event.key) && changeSort(sortType)}
+            style:border-bottom={currentSort === sortType ? "1px solid black" : ""}>
+            {sort} <span style:font-size="large">{(sortType === currentSort ? (sorts[sortType] ? "↓" : "↑") : "↕")}</span>
           </button>
         {/if}
       {/each}
     </div>
     <div class="filter-container">
-      Meal:
+      <span style:font-weight="700">Meal:</span>
       {#each meals as meal}
         <button class="filter" on:click={() => toggleFilter(meal)}>
           <div class="indicator" style:background-color={filters.includes(meal) ? getTagColor(meal) : "transparent"}></div>
@@ -85,7 +86,7 @@
       {/each}
     </div>
     <div class="filter-container">
-      Cuisine:
+      <span style:font-weight="700">Cuisine:</span>
       {#each cuisines as cuisine}
         <button class="filter" on:click={() => toggleFilter(cuisine)}>
           <div class="indicator" style:background-color={filters.includes(cuisine) ? getTagColor(cuisine) : "transparent"}></div>
@@ -140,6 +141,7 @@
       .filter-container {
         display: flex;
         flex-direction: column;
+        flex-wrap: wrap;
 
         @media (max-width: 768px) {
           flex-direction: row;
@@ -153,7 +155,7 @@
           background-color: transparent;
           border: none;
           cursor: pointer;
-          width: min-content;
+          width: fit-content;
 
           .indicator {
             width: 0.75rem;
@@ -167,21 +169,16 @@
       .sort-container {
         display: flex;
         flex-direction: row;
-        justify-content: baseline;
-        gap: 0.25rem;
         align-items: center;
+
+        @media (max-width: 768px) {
+          justify-content: center;
+        }
 
         .sort {
           background-color: transparent;
-          display: flex;
-          flex-direction: row;
-          justify-content: center;
-          align-items: center;
           gap: 0.25rem;
-          padding-left: 0.3rem;
-          padding-right: 0.3rem;
-          border: 1px solid black;
-          border-radius: 0.5rem;
+          border: none; 
           cursor: pointer;
         }
       }

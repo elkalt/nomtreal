@@ -6,6 +6,7 @@
   --t-light-blue: #8eb8f1;
   --t-dark-blue: #5e70d8;
   --t-red: #ff4e50;
+  --t-light-green: #8fd492;
 }
 
 :global(body) {
@@ -16,7 +17,7 @@
 :global(h1), :global(h2), :global(p) {
   padding: 0;
   margin: 0;
-  font-family: 'EB Garamond', serif;  
+  font-family: 'EB Garamond', serif;
 }
 
 .material-symbols-outlined {
